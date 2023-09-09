@@ -6,9 +6,9 @@ Print a key-value pair with a key and value coloured differently.
 
 :param key: The key to print
 :param value: The value to print
-:param newline: Whether to print a newline after the value
+:param level: The logging level to print at
 :returns: None
 """
-def kv_print(key: str, value: str, newline: bool = False) -> None:
-    logging.info(f"{key}: {value}")
-    print(termcolor.colored(key, "cyan") + ": " + termcolor.colored(value, "white"), end="\n" if newline else " ")
+def kv_print(key: str, value: str, level: str = "INFO") -> None:
+    logger = getattr(logging, level.lower())
+    logger(termcolor.colored(key, "cyan") + ": " + termcolor.colored(value, "white"))

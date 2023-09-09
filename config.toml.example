@@ -1,0 +1,10 @@
+seconds = 300
+automatic = true
+source = "konachan"
+tags = [
+    "rating:s"
+]
+
+[logging]
+file = "INFO"
+console = "DEBUG"

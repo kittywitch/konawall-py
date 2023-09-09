@@ -3,6 +3,7 @@ import os
 import re
 import inspect
 import logging
+from custom_print import kv_print
 
 global environment_handlers
 global source_handlers
@@ -49,7 +50,7 @@ def add_environment(environment: str) -> callable:
 	path = frame[0].f_code.co_filename
 	def wrapper(function):
 		environment_handlers[environment] = function
-		logging.debug(f"Loaded environment handler {environment} from {path}")
+		kv_print(f"Loaded environment handler {environment} from", path, level="debug")
 	return wrapper
 
 """
@@ -65,5 +66,5 @@ def add_source(source: str) -> callable:
 	path = frame[0].f_code.co_filename
 	def wrapper(function):
 		source_handlers[source] = function
-		logging.debug(f"Loaded wallpaper source {source} from {path}")
+		kv_print(f"Loaded wallpaper source {source} from", path, level="debug")
 	return wrapper

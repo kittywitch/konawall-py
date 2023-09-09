@@ -25,7 +25,7 @@ def download_files(files: list) -> list:
         # Close the file
         image_file.close()
         # Give the user data about the downloaded image
-        kv_print(f"Image {str(i+1)}", image_file.name, newline=True)
+        kv_print(f"Image {str(i+1)}", image_file.name)
         # Add the file to the list of downloaded files
         downloaded_files.append(image_file.name)
     return downloaded_files

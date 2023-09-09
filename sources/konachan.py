@@ -34,9 +34,9 @@ def request_posts(count: int, tags: list) -> list:
             kv_print("Post ID", post["id"])
             kv_print("Author", post["author"])
             kv_print("Rating", post["rating"])
-            kv_print("Resolution", f"{post['width']}x{post['height']}", newline=True)
-            kv_print("Tags", post["tags"], newline=True)
-            kv_print("URL", post["file_url"], newline=True)
+            kv_print("Resolution", f"{post['width']}x{post['height']}")
+            kv_print("Tags", post["tags"])
+            kv_print("URL", post["file_url"])
             # Append the URL to the list
             post_urls.append(post["file_url"])
     else:
