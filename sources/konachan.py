@@ -15,7 +15,8 @@ Turn a list of tags and a count into a list of URLs to download from
 def request_posts(count: int, tags: list) -> list:
     logging.debug(f"request_posts() called with count={count}, tags=[{', '.join(tags)}]")
     # Make sure we get a different result every time by using "order:random" as a tag
-    tags.append("order:random")
+    if "order:random" not in tags:
+        tags.append("order:random")
     # Tags are separated by a plus sign for this API
     tag_string: str = "+".join(tags)
     # Request URL for getting posts from the API
