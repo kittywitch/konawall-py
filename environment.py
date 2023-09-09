@@ -52,9 +52,9 @@ def detect_environment():
 """
     This sets wallpapers on any platform, as long as it is supported.
 """
-def set_environment_wallpapers(environment: str, files: list):
+def set_environment_wallpapers(environment: str, files: list, displays: list):
     if environment in environment_handlers:
-        environment_handlers[f"{environment}_setter"](files)
+        environment_handlers[f"{environment}_setter"](files, displays)
         logging.info("Wallpapers set!")
     else:
         UnsupportedPlatform(f"Environment {environment} is not supported, sorry!")
