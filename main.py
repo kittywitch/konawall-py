@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import argparse
 import screeninfo
@@ -17,9 +18,12 @@ def main():
     parser.add_argument("-e", "--environment", help="override the environment detection", type=str)
     parser.add_argument("-s", "--source", help="override the source provider", type=str, default="konachan")
     parser.add_argument("-c", "--count", help="override the number of wallpapers to fetch", type=int)
+    parser.add_argument("-q", "--quiet", help="silence all output", action="store_true")
     parser.add_argument("tags", nargs="+")
     args = parser.parse_args()
 
+    if args.quiet:
+        sys.stdout = open(os.devnull, "w")
 
     if args.verbose:
         log_level = logging.DEBUG
