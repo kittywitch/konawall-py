@@ -22,16 +22,22 @@ def main():
 
 
     if args.verbose:
-        logging.basicConfig(level=logging.DEBUG)
+        log_level = logging.DEBUG
     else:
-        logging.basicConfig(level=logging.WARNING)
+        log_level = logging.INFO
+    logging.basicConfig(
+        level=log_level,
+        filename="app.log",
+        filemode="a",
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
     logging.debug(f"Called with args={args}")
 
     import_dir(os.path.join(os.path.dirname(os.path.abspath( __file__ )), "sources"))
-    logging.info(f"Loaded source handlers: {', '.join(source_handlers)}")
+    logging.debug(f"Loaded source handlers: {', '.join(source_handlers)}")
     import_dir(os.path.join(os.path.dirname(os.path.abspath( __file__ )), "environments"))
-    logging.info(f"Loaded environment handlers: {', '.join(environment_handlers)}")
+    logging.debug(f"Loaded environment handlers: {', '.join(environment_handlers)}")
 
     environment = detect_environment()
     environment_handlers[environment + "_init"]()
@@ -48,7 +54,7 @@ def main():
         set_environment_wallpapers(environment, files, displays)
     else:
         environment_handlers[f"{args.environment}_setter"](files, displays)
-        logging.info("Wallpapers set!")
+        logging.debug("Wallpapers set!")
 
 
 if __name__ == "__main__":

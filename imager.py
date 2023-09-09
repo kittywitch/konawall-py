@@ -12,6 +12,6 @@ def combine_to_viewport(displays: list, files: list):
         resized_image = open_image.resize((displays[i].width, displays[i].height))
         combined.paste(resized_image, (displays[i].x, displays[i].y))
     file = tempfile.NamedTemporaryFile(delete=False)
-    logging.info(f"Created temporary file {file.name} to save combined viewport image into")
+    logging.debug(f"Created temporary file {file.name} to save combined viewport image into")
     combined.save(file.name, format="PNG")
     return file

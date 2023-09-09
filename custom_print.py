@@ -1,3 +1,4 @@
+import logging
 import termcolor
 
 """
@@ -9,4 +10,5 @@ Print a key-value pair with a key and value coloured differently.
 :returns: None
 """
 def kv_print(key: str, value: str, newline: bool = False) -> None:
+    logging.info(f"{key}: {value}")
     print(termcolor.colored(key, "cyan") + ": " + termcolor.colored(value, "white"), end="\n" if newline else " ")

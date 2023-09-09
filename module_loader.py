@@ -49,7 +49,7 @@ def add_environment(environment: str) -> callable:
 	path = frame[0].f_code.co_filename
 	def wrapper(function):
 		environment_handlers[environment] = function
-		logging.info(f"Loaded environment handler {environment} from {path}")
+		logging.debug(f"Loaded environment handler {environment} from {path}")
 	return wrapper
 
 """
@@ -65,5 +65,5 @@ def add_source(source: str) -> callable:
 	path = frame[0].f_code.co_filename
 	def wrapper(function):
 		source_handlers[source] = function
-		logging.info(f"Loaded wallpaper source {source} from {path}")
+		logging.debug(f"Loaded wallpaper source {source} from {path}")
 	return wrapper

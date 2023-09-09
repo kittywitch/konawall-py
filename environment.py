@@ -43,10 +43,10 @@ def detect_linux_environment():
 def detect_environment():
     if sys.platform == "linux":
         environment = detect_linux_environment()
-        logging.info(f"Detected environment is {environment} running on Linux")
+        logging.debug(f"Detected environment is {environment} running on Linux")
     else:
         environment = sys.platform
-        logging.info(f"Detected environment is {environment}")
+        logging.debug(f"Detected environment is {environment}")
     return environment
 
 """
@@ -55,6 +55,6 @@ def detect_environment():
 def set_environment_wallpapers(environment: str, files: list, displays: list):
     if f"{environment}_setter" in environment_handlers:
         environment_handlers[f"{environment}_setter"](files, displays)
-        logging.info("Wallpapers set!")
+        logging.debug("Wallpapers set!")
     else:
         UnsupportedPlatform(f"Environment {environment} is not supported, sorry!")
