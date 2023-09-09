@@ -47,7 +47,7 @@ def main():
     if not args.environment:
         set_environment_wallpapers(environment, files, displays)
     else:
-        environment_handlers[args.environment](files, displays)
+        environment_handlers[f"{args.environment}_setter"](files, displays)
         logging.info("Wallpapers set!")
 
 

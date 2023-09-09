@@ -53,7 +53,7 @@ def detect_environment():
     This sets wallpapers on any platform, as long as it is supported.
 """
 def set_environment_wallpapers(environment: str, files: list, displays: list):
-    if environment in environment_handlers:
+    if f"{environment}_setter" in environment_handlers:
         environment_handlers[f"{environment}_setter"](files, displays)
         logging.info("Wallpapers set!")
     else:
