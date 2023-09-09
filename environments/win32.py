@@ -28,7 +28,7 @@ def set_wallpapers(files: list, displays: list):
         file = combine_to_viewport(displays, files)
         ctypes.windll.user32.SystemParametersInfoW(20, 0, file, 0)
     else:
-        logging.debug("Detected only one monitor, setting wagilpaper simply")
+        logging.debug("Detected only one monitor, setting wallpaper simply")
         desktop = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Control Panel\\Desktop", 0, winreg.KEY_ALL_ACCESS)
         wallpaper_style = winreg.SetValueEx(desktop, "WallpaperStyle", 0, winreg.REG_SZ, "3")
         desktop.Close()
