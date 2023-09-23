@@ -2,7 +2,7 @@ import logging
 import termcolor
 
 """
-Print a key-value pair with a key and value coloured differently.
+Print a key-value pair with a key and value.
 
 :param key: The key to print
 :param value: The value to print
@@ -11,4 +11,4 @@ Print a key-value pair with a key and value coloured differently.
 """
 def kv_print(key: str, value: str, level: str = "INFO") -> None:
     logger = getattr(logging, level.lower())
-    logger(termcolor.colored(key, "cyan") + ": " + termcolor.colored(value, "white"))
+    logger(f"{key}: {value}")

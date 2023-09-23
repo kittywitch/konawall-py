@@ -35,9 +35,9 @@ def create_menu_item(menu, label, func):
     return item
 
 class Konawall(wx.adv.TaskBarIcon):
-    def __init__(self, file_logger, console_logger):
+    def __init__(self, file_logger):
         self.file_logger = file_logger
-        self.console_logger = console_logger
+        #self.console_logger = console_logger
         self.loaded = False
         wx.adv.TaskBarIcon.__init__(self)
         # Pre-setup initialization
@@ -119,11 +119,11 @@ class Konawall(wx.adv.TaskBarIcon):
         else:
             file_log_level = logging.INFO
         self.file_logger.setLevel(file_log_level)
-        if "console" in self.logging:
-            console_log_level = getattr(logging, self.logging["console"])
-        else:
-            console_log_level = logging.INFO
-        self.console_logger.setLevel(console_log_level)
+        #if "console" in self.logging:
+        #    console_log_level = getattr(logging, self.logging["console"])
+        #else:
+        #    console_log_level = logging.INFO
+        #self.console_logger.setLevel(console_log_level)
         # Finished loading
         self.loaded = True
 
@@ -160,15 +160,15 @@ class Konawall(wx.adv.TaskBarIcon):
 
 if __name__ == "__main__":
     file_logger = logging.FileHandler("app.log", mode="a")
-    console_logger = logging.StreamHandler()
+    #console_logger = logging.StreamHandler()
     logging.basicConfig(
         level=logging.DEBUG,
         format="%(asctime)s - %(levelname)s - %(message)s",
         handlers=[
-            console_logger,
+            #console_logger,
             file_logger,
         ]
     )
     app = wx.App(False)
-    Konawall(file_logger, console_logger)
+    Konawall(file_logger)
     app.MainLoop()
