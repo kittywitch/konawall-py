@@ -2,3 +2,5 @@ Pillow
 screeninfo
 requests
 termcolor
+wxpython
+humanfriendly

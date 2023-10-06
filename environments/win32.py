@@ -1,7 +1,6 @@
 import os
 import ctypes
 import logging
-import winreg
 from imager import combine_to_viewport
 from module_loader import add_environment
 
@@ -20,6 +19,7 @@ This sets wallpapers on Windows.
 """
 @add_environment("win32_setter")
 def set_wallpapers(files: list, displays: list):
+    import winreg
     if len(files) > 1:
         logging.debug("Several monitors detected, going the hard route")
         desktop = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Control Panel\\Desktop", 0, winreg.KEY_ALL_ACCESS)
