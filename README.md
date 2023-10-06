@@ -2,7 +2,7 @@
 
 A rewrite of konawall-rs in Python so that image manipulation is easier and cross-platform support is sort-of easier.
 
-## To-do
+## To-do
 
 - [ ] Ensure that platforms all work with single and multiple-monitor setting:
     - [x] macOS

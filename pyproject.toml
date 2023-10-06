@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "konawall"
+version = "0.1.0"
+description = "A hopefully cross-platform service for fetching wallpapers and setting them"
+authors = [
+    "Kat Inskip <kat@inskip.me>"
+]
+readme = "README.MD"
+packages = [
+    {include = "konawall"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pillow = "^10.0.1"
+screeninfo = "^0.8.1"
+requests = "^2.31.0"
+termcolor = "^2.3.0"
+wxpython = "^4.2.1"
+humanfriendly = "^10.0"
+
+[build-system]
+requires = [
+    "poetry-core"
+]
+build-backend = "poetry.core.masonry.api"
