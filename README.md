@@ -4,6 +4,13 @@ A rewrite of konawall-rs in Python so that image manipulation is easier and cros
 
 ## To-do
 
+- [ ] Completely rewrite CLI
+    - [ ] Provide an amount of tooling equality for CLI
+        - [ ] Use the config
+        - [ ] Allow specifying args, but use the argparse system, environment variables and with a config parse system simultaneously, perhaps?
+            - [ ] Check if such a thing to automate that exists for Python
+        - [ ] Provide a history viewer TUI / CLI application
+            - [ ] Investigate best methodology to provide this; are we providing queries? Should we provide JSON?
 - [ ] Ensure that platforms all work with single and multiple-monitor setting:
     - [x] macOS
     - [x] Windows
@@ -22,8 +29,17 @@ A rewrite of konawall-rs in Python so that image manipulation is easier and cros
 - [ ] Provide installer packages for macOS and Windows, including on-startup functionality
     - [ ] macOS
     - [ ] Windows
+- [ ] Acknowledge that I am reinventing a database; perhaps use a database?
+    - [ ] SQLite with SQLAlchemy for the history
+        - Implementation thoughts: Rotations Table has UUID, Image Foreign Keys with corresponding metadata for the monitors they were requested to fit to, the tags of the request and the tags returned in metadata, so on and so forth. A model should be provided per source for the database in this regard, because each API will have its own weird metadata. Figure out how to handle that.
+            Image table would approximately be as one would expect, containing the data for the monitor and the actual original image API call, alongside other parameters we can obtain.
+- [ ] Environments
+    - [ ] Replace the current methodology with a class based approach for their initializations, their wallpaper setters, ...
+    - [ ] Make the modular approach work with that
+    - [ ] Separate this out into a separate library for doing wallpaper management
 - [ ] Sources
-    - [ ] Turn the current konachan source into a eneralized booru plugin
+    - [ ] Separate this out into a separate library for doing image fetching from sources
+    - [ ] Turn the current konachan source into a generalized booru plugin
         - [ ] Refactor, allow custom HTTP headers and a specified URL within config
             - [ ] Test with e621
             - [ ] Test with gelbooru
