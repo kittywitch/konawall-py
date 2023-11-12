@@ -3,7 +3,7 @@ import os
 import re
 import inspect
 import logging
-from custom_print import kv_print
+from konawall.custom_print import kv_print
 
 global environment_handlers
 global source_handlers

@@ -1,5 +1,5 @@
 import subprocess
-from module_loader import add_environment
+from konawall.module_loader import add_environment
 
 """
 This sets wallpapers on Darwin.

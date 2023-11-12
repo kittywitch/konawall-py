@@ -1,8 +1,8 @@
 import os
 import ctypes
 import logging
-from imager import combine_to_viewport
-from module_loader import add_environment
+from konawall.imager import combine_to_viewport
+from konawall.module_loader import add_environment
 
 """
 Pre-setting on Windows

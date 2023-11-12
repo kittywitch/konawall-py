@@ -1,8 +1,8 @@
 import sys
 import os
 import logging
-from custom_errors import UnsupportedPlatform
-from module_loader import environment_handlers
+from konawall.custom_errors import UnsupportedPlatform
+from konawall.module_loader import environment_handlers
 
 """
 This detects the DE/WM from the Linux environment because it's not provided by the platform
@@ -21,6 +21,7 @@ def detect_linux_environment():
         "kde", # qdbus
     ]
     modified_mapping = {
+        "plasma": "kde",
         "fluxbox": "feh",
         "blackbox": "feh",
         "openbox": "feh",

@@ -9,15 +9,15 @@ import screeninfo
 import tomllib
 import subprocess
 import importlib.metadata
-from environment import set_environment_wallpapers, detect_environment
-from module_loader import import_dir, environment_handlers, source_handlers
-from custom_print import kv_print
+from konawall.environment import set_environment_wallpapers, detect_environment
+from konawall.module_loader import import_dir, environment_handlers, source_handlers
+from konawall.custom_print import kv_print
 from humanfriendly import format_timespan
 
 class Konawall(wx.adv.TaskBarIcon):
     def __init__(self, version, file_logger):
         # Prevents it from closing before it has done any work on macOS
-        if wx.Platform == "__WXMAC__":
+        if wx.Platform == "__WXMAC__" or wx.Platform == "__WXGTK__":
             self.hidden_frame = wx.Frame(None)
             self.hidden_frame.Hide()
 
@@ -37,6 +37,17 @@ class Konawall(wx.adv.TaskBarIcon):
         self.wallpaper_rotation_timer = wx.Timer(self, wx.ID_ANY)
 
         # Reload (actually load) the config and modules.
+        if wx.Platform == "__WXGTK__":
+            from xdg_base_dirs import xdg_config_home
+            self.config_path = os.path.join(xdg_config_home(), "konawall", "config.toml") 
+        if wx.Platform == "__WXMAC__":
+            config_path_string = "~/Library/Application Support/konawall/config.toml"
+            self.config_path = os.path.expanduser(config_path_string)
+        elif wx.Platform == "__WXMSW__":
+            config_path_string = "%APPDATA%\\konawall\\config.toml"
+            self.config_path = os.path.expandvars(config_path_string)
+        else:
+            self.config_path = os.path.join(os.path.expanduser("~"), ".config", "konawall", "config.toml")
         self.reload_config()
         self.import_modules()
 
@@ -65,7 +76,7 @@ class Konawall(wx.adv.TaskBarIcon):
         if "wxMSW" in wx.PlatformInfo:
             image = image.resize((16, 16))
         elif "wxGTK" in wx.PlatformInfo:
-            image = image.rescale((22, 22))
+            image = image.resize((22, 22))
 
         # Write image to temporary file
         temp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
@@ -77,7 +88,7 @@ class Konawall(wx.adv.TaskBarIcon):
         return icon 
 
     def toggle_timed_wallpaper_rotation_status(self):
-        return f"{'Dis' if self.rotate_wallpapers else 'En'}able Timer"
+        return f"{'Dis' if self.rotate else 'En'}able Timer"
 
     # Load in our source and environment handlers
     def import_modules(self):
@@ -88,9 +99,9 @@ class Konawall(wx.adv.TaskBarIcon):
     
     # Load a TOML file's key-value pairs into our class
     def load_config(self):
-        if os.path.isfile("config.toml"):
+        if os.path.isfile(self.config_path):
             # If the config file exists, load it as a dictionary into the config variable.
-            with open("config.toml", "rb") as f:
+            with open(self.config_path, "rb") as f:
                 config = tomllib.load(f)
             # for every key-value pair in the config variable , set the corresponding attribute of our class to it
             for k, v in config.items():
@@ -100,14 +111,14 @@ class Konawall(wx.adv.TaskBarIcon):
             # If there is no config file, get complainy.
             dialog = wx.MessageDialog(
                 None,
-                "No config file found, using defaults.",
+                f"No config file found at {self.config_path}, using defaults.",
                 self.title_string,
                 wx.OK|wx.ICON_INFORMATION
             )
             dialog.ShowModal()
             dialog.Destroy()
             # Set some arbitrary defaults
-            self.rotate_wallpapers = True
+            self.rotate = True
             self.interval = 10*60
             self.tags = ["rating:s"]
             self.logging = {}
@@ -123,7 +134,10 @@ class Konawall(wx.adv.TaskBarIcon):
             return item
         def create_info_item(menu, label, help=""):
             item = wx.MenuItem(menu, wx.ID_ANY, label)
-            item.Enable(False)
+            if wx.Platform == "__WXGTK__":
+                menu.Bind(wx.EVT_MENU, (lambda x: x), id=item.GetId())
+            else:
+                item.Enable(False)
             menu.Append(item)
             return item
         def create_separator(menu):
@@ -195,21 +209,21 @@ class Konawall(wx.adv.TaskBarIcon):
     
     # Interactively edit the config file
     def edit_config_menu_item(self, event):
-        kv_print("User is editing", "config.toml")
+        kv_print("User is editing", self.config_path)
         # Check if we're on Windows, if so use Notepad
         if sys.platform == "win32":
            # I don't even know how to detect the default editor on Windows
-           subprocess.call("notepad.exe config.toml")
+           subprocess.call(f"notepad.exe {self.config_path}", shell=True)
         else:
             # Open config file in default editor
-            subprocess.call(f"{os.environ['SHELL']} {os.environ['EDITOR']} config.toml")
+            subprocess.call(f"{os.environ['SHELL']} {os.environ['EDITOR']} {self.config_path}", shell=True)
         # When file is done being edited, reload config
-        kv_print("User has edited", "config.toml")
+        kv_print("User has edited", self.config_path)
         self.reload_config()
 
     # Reload the application
     def reload_config(self):
-        kv_print(f"{'Rel' if self.loaded_before else 'L'}oading config from", "config.toml")
+        kv_print(f"{'Rel' if self.loaded_before else 'L'}oading config from", self.config_path)
         self.load_config()
         
         # Handle finding the log level
@@ -250,14 +264,14 @@ class Konawall(wx.adv.TaskBarIcon):
 
     # Set whether to rotate wallpapers automatically or not
     def toggle_timed_wallpaper_rotation(self, event):
-        self.rotate_wallpapers = not self.rotate_wallpapers 
+        self.rotate = not self.rotate
         self.respect_timed_wallpaper_rotation_toggle()
 
     # Update the timer and the menu item to reflect our current state
     def respect_timed_wallpaper_rotation_toggle(self): 
-        if self.rotate_wallpapers and not self.wallpaper_rotation_timer.IsRunning():
+        if self.rotate and not self.wallpaper_rotation_timer.IsRunning():
             self.wallpaper_rotation_timer.Start(1000)
-        elif not self.rotate_wallpapers and self.wallpaper_rotation_timer.IsRunning():
+        elif not self.rotate and self.wallpaper_rotation_timer.IsRunning():
             self.wallpaper_rotation_timer.Stop()
             # Set the time left counter to show that it is disabled
             self.timed_wallpaper_rotation_status_menu_item.SetItemLabel(f"Automatic wallpaper rotation disabled")
@@ -316,12 +330,12 @@ def main():
         version = "testing version"
 
     file_logger = logging.FileHandler("app.log", mode="a")
-    #console_logger = logging.StreamHandler()
+    console_logger = logging.StreamHandler()
     logging.basicConfig(
         level=logging.DEBUG,
         format="%(asctime)s - %(levelname)s - %(message)s",
         handlers=[
-            #console_logger,
+            console_logger,
             file_logger,
         ]
     )

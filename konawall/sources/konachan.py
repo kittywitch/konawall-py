@@ -1,9 +1,9 @@
 import requests
 import logging
-from custom_print import kv_print
-from custom_errors import RequestFailed
-from module_loader import add_source
-from downloader import download_files
+from konawall.custom_print import kv_print
+from konawall.custom_errors import RequestFailed
+from konawall.module_loader import add_source
+from konawall.downloader import download_files
 
 """
 Turn a list of tags and a count into a list of URLs to download from

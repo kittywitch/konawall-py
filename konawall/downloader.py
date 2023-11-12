@@ -1,7 +1,7 @@
 import logging
 import tempfile
 import requests
-from custom_print import kv_print
+from konawall.custom_print import kv_print
 
 """
 Download files given a list of URLs

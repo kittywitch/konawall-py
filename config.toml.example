@@ -1,5 +1,5 @@
-seconds = 300
-automatic = true
+interval = 300
+rotate = true
 source = "konachan"
 tags = [
     "rating:s"

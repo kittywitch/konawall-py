@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "konawall"
 version = "0.1.0"
+license = "MIT"
 description = "A hopefully cross-platform service for fetching wallpapers and setting them"
 authors = [
     "Kat Inskip <kat@inskip.me>"
@@ -10,6 +11,9 @@ packages = [
     {include = "konawall"}
 ]
 
+[tool.poetry.scripts]
+gui = "konawall.script"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 pillow = "^10.0.1"
@@ -18,9 +22,8 @@ requests = "^2.31.0"
 termcolor = "^2.3.0"
 wxpython = "^4.2.1"
 humanfriendly = "^10.0"
+xdg-base-dirs = "^6.0.1"
 
 [build-system]
-requires = [
-    "poetry-core"
-]
+requires = [ "poetry-core" ]
 build-backend = "poetry.core.masonry.api"
