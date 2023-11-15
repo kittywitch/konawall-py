@@ -1,4 +1,5 @@
-import wx 
+#!/usr/bin/env python
+import wx
 import wx.adv
 import tempfile
 from PIL import Image, ImageDraw
@@ -119,6 +120,7 @@ class Konawall(wx.adv.TaskBarIcon):
             dialog.Destroy()
             # Set some arbitrary defaults
             self.rotate = True
+            self.source = "konachan"
             self.interval = 10*60
             self.tags = ["rating:s"]
             self.logging = {}
