@@ -12,7 +12,7 @@ packages = [
 ]
 
 [tool.poetry.scripts]
-gui = "konawall.gui"
+gui = "konawall.gui:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"

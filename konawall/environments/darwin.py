@@ -10,5 +10,5 @@ This sets wallpapers on Darwin.
 def set_wallpapers(files: list, displays: list):
     for i, file in enumerate(files):
         # Run osascript to set the wallpaper for each monitor
-        command = f'tell application "System Events" to set picture of desktop {i} to "{file}"'
+        command = f'tell application "System Events" to set picture of desktop {i-1} to "{file}"'
         subprocess.run(["osascript", "-e", command])
