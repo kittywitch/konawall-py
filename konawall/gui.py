@@ -70,10 +70,7 @@ class Konawall(wx.adv.TaskBarIcon):
         height = 128
 
         # Missing texture style, magenta and black checkerboard
-        image = Image.new('RGB', (width, height), (0, 0, 0))
-        dc = ImageDraw.Draw(image)
-        dc.rectangle((0, 0, width//2, height//2), fill=(255, 0, 255))
-        dc.rectangle((width//2, height//2, width, height), fill=(255, 0, 255))
+        image = Image.open(os.path.join(os.path.dirname(__file__), 'icon.png'))
         if "wxMSW" in wx.PlatformInfo:
             image = image.resize((16, 16))
         elif "wxGTK" in wx.PlatformInfo:
@@ -331,7 +328,18 @@ def main():
     except:
         version = "testing version"
 
-    file_logger = logging.FileHandler("app.log", mode="a")
+    if wx.Platform == "__WXGTK__":
+        from xdg_base_dirs import xdg_config_home
+        log_path = os.path.join(xdg_config_home(), "konawall", "log.toml") 
+    if wx.Platform == "__WXMAC__":
+        log_path_string = "~/Library/Application Support/konawall/log.toml"
+        log_path = os.path.expanduser(log_path_string)
+    elif wx.Platform == "__WXMSW__":
+        log_path_string = "%APPDATA%\\konawall\\log.toml"
+        log_path = os.path.expandvars(log_path_string)
+    else:
+        log_path = os.path.join(os.path.expanduser("~"), ".config", "konawall", "log.toml")
+    file_logger = logging.FileHandler(log_path, mode="a")
     console_logger = logging.StreamHandler()
     logging.basicConfig(
         level=logging.DEBUG,

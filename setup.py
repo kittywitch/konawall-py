@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.MD", "r") as f:
     long_description = f.read()
@@ -16,6 +16,8 @@ setup(
     author_email = poetryBlock["authors"][0].split(" <")[1][:-1],
     description = poetryBlock["description"],
     long_description = long_description,
+    package_data={'': ['*.png', '*.jpg', '*.jpeg', '*.gif', '*.bmp', '*.tiff', '*.webp']},
+    include_package_data=True,
     entry_points = {
         "console_scripts": [
             "konawall = konawall.gui:main",

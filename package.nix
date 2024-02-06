@@ -18,7 +18,7 @@ in
     doCheck = false;
 
     propagatedBuildInputs = let
-      dependencyNames = lib.attrNames poetryBlock.dependencies;
+      dependencyNames = (lib.attrNames poetryBlock.dependencies) ++ ["dbus-python"];
       dependencies = map (name: python311Packages.${name} or dependencyReplacements.${name}) dependencyNames;
     in
       dependencies;
