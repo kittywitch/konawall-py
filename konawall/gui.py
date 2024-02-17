@@ -19,9 +19,9 @@ class Konawall(wx.adv.TaskBarIcon):
     def __init__(self, version, file_logger):
         super().__init__()
         # Prevents it from closing before it has done any work on macOS
-        #if wx.Platform == "__WXMAC__" or wx.Platform == "__WXGTK__":
-        self.hidden_frame = wx.Frame(None)
-        self.hidden_frame.Hide()
+        if wx.Platform == "__WXMAC__" or wx.Platform == "__WXGTK__":
+            self.hidden_frame = wx.Frame(None)
+            self.hidden_frame.Hide()
 
         self.wallpaper_rotation_counter = 0 
         self.file_logger = file_logger
@@ -61,6 +61,15 @@ class Konawall(wx.adv.TaskBarIcon):
         # Set up the taskbar icon, menu, bindings, ...
         icon = self.generate_icon()
         self.SetIcon(icon, self.title_string)
+        if self.environment == "hyprland":
+            import pystray
+            def setup(self):
+                self.visible = True
+            self.external_icon = pystray.Icon("Konawall - {version}", icon=self.generate_icon_bitmap(), menu=pystray.Menu(
+                pystray.MenuItem("Rotate", self.rotate_wallpapers),
+                pystray.MenuItem("Toggle Rotation", self.toggle_timed_wallpaper_rotation, checked=lambda item: self.rotate)
+            ))
+            self.external_icon.run(setup)
         self.hidden_frame.SetIcon(icon)
         self.create_menu()
         self.create_bindings()
@@ -69,7 +78,7 @@ class Konawall(wx.adv.TaskBarIcon):
         self.rotate_wallpapers(None)
 
     # wxPython requires a wx.Bitmap, so we generate one from a PIL.Image
-    def generate_icon(self):
+    def generate_icon_bitmap(self):
         width = 128
         height = 128
 
@@ -79,7 +88,10 @@ class Konawall(wx.adv.TaskBarIcon):
             image = image.resize((16, 16))
         elif "wxGTK" in wx.PlatformInfo:
             image = image.resize((22, 22))
+        return image
 
+    def generate_icon(self):
+        image = self.generate_icon_bitmap()
         # Write image to temporary file
         temp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
         image.save(temp.name)
@@ -87,7 +99,7 @@ class Konawall(wx.adv.TaskBarIcon):
         # Convert to wxPython icon
         icon = wx.Icon()
         icon.CopyFromBitmap(wx.Bitmap(temp.name))
-        return icon 
+        return icon
 
     def toggle_timed_wallpaper_rotation_status(self):
         return f"{'Dis' if self.rotate else 'En'}able Timer"
@@ -263,13 +275,14 @@ class Konawall(wx.adv.TaskBarIcon):
     
     # Update the menu item of the current interval display to read correctly
     def respect_current_interval_status(self):
-        self.current_interval_menu_item.SetItemLabel(f"Rotation interval: {format_timespan(self.interval)}")
+        if self.IsAvailable:
+            self.current_interval_menu_item.SetItemLabel(f"Rotation interval: {format_timespan(self.interval)}")
 
     # Set whether to rotate wallpapers automatically or not
     def toggle_timed_wallpaper_rotation(self, event):
         self.rotate = not self.rotate
         self.respect_timed_wallpaper_rotation_toggle()
-
+    
     # Update the timer and the menu item to reflect our current state
     def respect_timed_wallpaper_rotation_toggle(self): 
         if self.rotate and not self.wallpaper_rotation_timer.IsRunning():
@@ -277,14 +290,17 @@ class Konawall(wx.adv.TaskBarIcon):
         elif not self.rotate and self.wallpaper_rotation_timer.IsRunning():
             self.wallpaper_rotation_timer.Stop()
             # Set the time left counter to show that it is disabled
-            self.timed_wallpaper_rotation_status_menu_item.SetItemLabel(f"Automatic wallpaper rotation disabled")
+            if self.IsAvailable:
+                self.current_interval_menu_item.SetItemLabel(f"Automatic wallpaper rotation disabled")
         
         # Update the menu item for the toggle
-        self.toggle_wallpaper_rotation_menu_item.SetItemLabel(self.toggle_timed_wallpaper_rotation_status())
+        if self.IsAvailable:
+            self.toggle_wallpaper_rotation_menu_item.SetItemLabel(self.toggle_timed_wallpaper_rotation_status())
 
     # Update wallpaper rotation time left counter
     def respect_timed_wallpaper_rotation_status(self):
-        self.timed_wallpaper_rotation_status_menu_item.SetItemLabel(f"Next rotation: {format_timespan(self.interval - self.wallpaper_rotation_counter)} remaining")
+        if self.IsAvailable:
+            self.timed_wallpaper_rotation_status_menu_item.SetItemLabel(f"Next rotation: {format_timespan(self.interval - self.wallpaper_rotation_counter)} remaining")
 
     # Perform the purpose of the application; get new wallpaper media and set 'em.
     def rotate_wallpapers(self, event):

@@ -2,7 +2,11 @@
   lib,
   buildPythonPackage,
   python311Packages,
-  psmisc
+  psmisc,
+  gobject-introspection,
+  gtk3,
+  dbus-python,
+  wrapGAppsHook,
 }: let
   pyproject = builtins.fromTOML (builtins.readFile ./pyproject.toml);
   poetryBlock = pyproject.tool.poetry;
@@ -18,12 +22,19 @@ in
 
     doCheck = false;
 
+    nativeBuildInputs = [
+      wrapGAppsHook
+      gobject-introspection
+    ];
+
     propagatedBuildInputs = let
-      dependencyNames = (lib.attrNames poetryBlock.dependencies) ++ ["dbus-python"];
+      dependencyNames = (lib.attrNames poetryBlock.dependencies) ++ ["setuptools" "pygobject3" "pystray" "dbus-python"];
       dependencies = map (name: python311Packages.${name} or dependencyReplacements.${name}) dependencyNames;
     in
       dependencies ++ [
       psmisc
+      gtk3
+      dbus-python
       ];
 
     meta = with lib; {
