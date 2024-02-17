@@ -17,10 +17,11 @@ from humanfriendly import format_timespan
 
 class Konawall(wx.adv.TaskBarIcon):
     def __init__(self, version, file_logger):
+        super().__init__()
         # Prevents it from closing before it has done any work on macOS
-        if wx.Platform == "__WXMAC__" or wx.Platform == "__WXGTK__":
-            self.hidden_frame = wx.Frame(None)
-            self.hidden_frame.Hide()
+        #if wx.Platform == "__WXMAC__" or wx.Platform == "__WXGTK__":
+        self.hidden_frame = wx.Frame(None)
+        self.hidden_frame.Hide()
 
         self.wallpaper_rotation_counter = 0 
         self.file_logger = file_logger
@@ -29,6 +30,8 @@ class Konawall(wx.adv.TaskBarIcon):
         self.description_string = "A hopefully cross-platform service for fetching wallpapers and setting them."
         self.loaded_before = False
 
+        print(self.IsAvailable())
+        print(self.IsOk())
         # Call the super function, make sure that the type is the statusitem for macOS
         wx.adv.TaskBarIcon.__init__(self, wx.adv.TBI_CUSTOM_STATUSITEM)
 
@@ -58,6 +61,7 @@ class Konawall(wx.adv.TaskBarIcon):
         # Set up the taskbar icon, menu, bindings, ...
         icon = self.generate_icon()
         self.SetIcon(icon, self.title_string)
+        self.hidden_frame.SetIcon(icon)
         self.create_menu()
         self.create_bindings()
 

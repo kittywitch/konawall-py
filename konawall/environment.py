@@ -39,7 +39,7 @@ def detect_linux_environment():
     elif desktop_session in modified_mapping:
         return modified_mapping[desktop_session]
     else:
-        UnsupportedPlatform(f"Desktop session {desktop_session} is not supported, sorry!")
+        return os.environ.get("XDG_CURRENT_DESKTOP").lower()
 
 def detect_environment():
     if sys.platform == "linux":

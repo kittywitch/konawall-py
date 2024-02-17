@@ -2,6 +2,7 @@
   lib,
   buildPythonPackage,
   python311Packages,
+  psmisc
 }: let
   pyproject = builtins.fromTOML (builtins.readFile ./pyproject.toml);
   poetryBlock = pyproject.tool.poetry;
@@ -21,7 +22,9 @@ in
       dependencyNames = (lib.attrNames poetryBlock.dependencies) ++ ["dbus-python"];
       dependencies = map (name: python311Packages.${name} or dependencyReplacements.${name}) dependencyNames;
     in
-      dependencies;
+      dependencies ++ [
+      psmisc
+      ];
 
     meta = with lib; {
       description = poetryBlock.description;
