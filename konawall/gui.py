@@ -69,7 +69,7 @@ class Konawall(wx.adv.TaskBarIcon):
                 pystray.MenuItem("Rotate", self.rotate_wallpapers),
                 pystray.MenuItem("Toggle Rotation", self.toggle_timed_wallpaper_rotation, checked=lambda item: self.rotate)
             ))
-            self.external_icon.run(setup)
+            self.external_icon.run_detached(setup)
         self.hidden_frame.SetIcon(icon)
         self.create_menu()
         self.create_bindings()
