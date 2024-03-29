@@ -43,7 +43,7 @@ class Konawall(wx.adv.TaskBarIcon):
         # Reload (actually load) the config and modules.
         if wx.Platform == "__WXGTK__":
             from xdg_base_dirs import xdg_config_home
-            self.config_path = os.path.join(xdg_config_home(), "konawall", "config.toml") 
+            self.config_path = os.path.join(xdg_config_home(), "konawall", "config.toml")
         if wx.Platform == "__WXMAC__":
             config_path_string = "~/Library/Application Support/konawall/config.toml"
             self.config_path = os.path.expanduser(config_path_string)
