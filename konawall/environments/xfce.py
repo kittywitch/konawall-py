@@ -12,4 +12,6 @@ def set_wallpapers(files: list, displays: list):
     set_command_base = ["xfconf-query", "-c", "xfce4-desktop", "-s", file.name, "-p"]
     for workspace_config in workspaces_command_wallpapers:
         set_command = set_command_base + [workspace_config]
+        set_style_command = ["xfconf-query", "-c", "xfce4-desktop", "-s", "5", "-p"] + [workspace_config.replace("last-image", "image-style")]
+        subprocess.run(set_style_command)
         subprocess.run(set_command)
