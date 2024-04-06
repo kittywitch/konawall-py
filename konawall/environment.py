@@ -16,7 +16,7 @@ def detect_linux_environment():
         "cinnamon", # dconf
         "mate", # dconf
         "deepin", # dconf
-        "xfce4", # xfconf
+        "xfce", # xfconf
         "lxde", # pcmanfm
         "kde", # qdbus
     ]
