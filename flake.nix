@@ -14,7 +14,7 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       packages = rec {
-        konawall-py = pkgs.python3.pkgs.callPackage ./package.nix {};
+        konawall-py = pkgs.python311.pkgs.callPackage ./package.nix {};
         default = konawall-py;
       };
     });
