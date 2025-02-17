@@ -61,7 +61,7 @@ class Konawall(wx.adv.TaskBarIcon):
         # Set up the taskbar icon, menu, bindings, ...
         icon = self.generate_icon()
         self.SetIcon(icon, self.title_string)
-        if self.environment == "hyprland" or self.environment == "gnome":
+        if self.environment in ["hyprland", "gnome", "kde"]:
             import pystray
             def setup(self):
                 self.visible = True

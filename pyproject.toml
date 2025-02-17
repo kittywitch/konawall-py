@@ -20,7 +20,7 @@ pillow = "^10.0.1"
 screeninfo = "^0.8.1"
 requests = "^2.31.0"
 termcolor = "^2.3.0"
-wxpython = "^4.2.1"
+wxpython = "^4.2.2"
 humanfriendly = "^10.0"
 xdg-base-dirs = "^6.0.1"
 
