@@ -16,19 +16,21 @@ from konawall.custom_print import kv_print
 from humanfriendly import format_timespan
 
 class Konawall(wx.adv.TaskBarIcon):
-    def __init__(self, version, file_logger):
+    def __init__(self, version, file_logger, log_path):
         super().__init__()
         # Prevents it from closing before it has done any work on macOS
         if wx.Platform == "__WXMAC__" or wx.Platform == "__WXGTK__":
             self.hidden_frame = wx.Frame(None)
             self.hidden_frame.Hide()
 
+        self.log_path = log_path
         self.wallpaper_rotation_counter = 0 
         self.file_logger = file_logger
         self.version = version
         self.title_string = f"Konawall - {version}"
         self.description_string = "A hopefully cross-platform service for fetching wallpapers and setting them."
         self.loaded_before = False
+        self.current = []
 
         print(self.IsAvailable())
         print(self.IsOk())
@@ -43,15 +45,22 @@ class Konawall(wx.adv.TaskBarIcon):
         # Reload (actually load) the config and modules.
         if wx.Platform == "__WXGTK__":
             from xdg_base_dirs import xdg_config_home
-            self.config_path = os.path.join(xdg_config_home(), "konawall", "config.toml")
+            self.config_path = os.path.join(xdg_config_home(), "konawall")
         if wx.Platform == "__WXMAC__":
-            config_path_string = "~/Library/Application Support/konawall/config.toml"
+            config_path_string = "~/Library/Application Support/konawall/"
             self.config_path = os.path.expanduser(config_path_string)
         elif wx.Platform == "__WXMSW__":
-            config_path_string = "%APPDATA%\\konawall\\config.toml"
+            config_path_string = "%APPDATA%\\konawall"
             self.config_path = os.path.expandvars(config_path_string)
         else:
-            self.config_path = os.path.join(os.path.expanduser("~"), ".config", "konawall", "config.toml")
+            try:
+                from xdg_base_dirs import xdg_config_home
+                self.config_path = os.path.join(xdg_config_home(), "konawall")
+            except:
+                self.config_path = os.path.join(os.path.expanduser("~"), ".config", "konawall")
+        if not os.path.exists(self.config_path):
+            os.makedirs(self.config_path)
+        self.config_path = os.path.join(self.config_path, "config.toml")
         self.reload_config()
         self.import_modules()
 
@@ -61,12 +70,14 @@ class Konawall(wx.adv.TaskBarIcon):
         # Set up the taskbar icon, menu, bindings, ...
         icon = self.generate_icon()
         self.SetIcon(icon, self.title_string)
-        if self.environment in ["hyprland", "gnome", "kde"]:
+        if self.environment in ["hyprland", "gnome"]:
             import pystray
             def setup(self):
                 self.visible = True
             self.external_icon = pystray.Icon("Konawall - {version}", icon=self.generate_icon_bitmap(), menu=pystray.Menu(
                 pystray.MenuItem("Rotate", self.rotate_wallpapers),
+                pystray.MenuItem("Open URL for image", self.open_url),
+                pystray.MenuItem("Open log", self.open_log),
                 pystray.MenuItem("Toggle Rotation", self.toggle_timed_wallpaper_rotation, checked=lambda item: self.rotate),
                 pystray.MenuItem("Quit",  self.close_program_menu_item)
             ))
@@ -77,6 +88,13 @@ class Konawall(wx.adv.TaskBarIcon):
 
         # Run the first time, manually
         self.rotate_wallpapers(None)
+
+    def open_url(self, evt=None):
+        for post in self.current:
+            subprocess.call(["xdg-open", f'https://konachan.com/post/show/{post["id"]}'])
+
+    def open_log(self, evt=None):
+        subprocess.call(["xdg-open", self.log_path])
 
     # wxPython requires a wx.Bitmap, so we generate one from a PIL.Image
     def generate_icon_bitmap(self):
@@ -188,13 +206,28 @@ class Konawall(wx.adv.TaskBarIcon):
             self.rotate_wallpapers,
             "Fetch new wallpapers and set them as your wallpapers"
         )
-
+        
         # Toggle automatic wallpaper rotation
         self.toggle_wallpaper_rotation_menu_item = create_menu_item(
             self.menu,
             self.toggle_timed_wallpaper_rotation_status(),
             self.toggle_timed_wallpaper_rotation,
             "Toggle the automatic wallpaper rotation timer"
+        )
+
+        create_separator(self.menu)
+        create_menu_item(
+            self.menu,
+            "Open wallpaper URLs",
+            self.open_url,
+            "Open wallpaper URLs via xdg-open"
+        )
+        
+        create_menu_item(
+            self.menu,
+            "Open log",
+            self.open_log,
+            "Open konawall log in editor"
         )
 
         create_separator(self.menu)
@@ -212,6 +245,7 @@ class Konawall(wx.adv.TaskBarIcon):
             self.reload_config_menu_item,
             "Reload the config file from disk"
         )
+        create_separator(self.menu)
         # Exit
         create_menu_item(
             self.menu,
@@ -307,7 +341,7 @@ class Konawall(wx.adv.TaskBarIcon):
     def rotate_wallpapers(self, event):
         displays = screeninfo.get_monitors()
         count = len(displays)
-        files = source_handlers[self.source](count, self.tags)
+        files, self.current = source_handlers[self.source](count, self.tags)
         set_environment_wallpapers(self.environment, files, displays)
 
     # For macOS
@@ -350,16 +384,23 @@ def main():
         version = "testing version"
 
     if wx.Platform == "__WXGTK__":
-        from xdg_base_dirs import xdg_config_home
-        log_path = os.path.join(xdg_config_home(), "konawall", "log.toml") 
+        from xdg_base_dirs import xdg_data_home
+        log_path = os.path.join(xdg_data_home(), "konawall") 
     if wx.Platform == "__WXMAC__":
-        log_path_string = "~/Library/Application Support/konawall/log.toml"
+        log_path_string = "~/Library/Application Support/konawall"
         log_path = os.path.expanduser(log_path_string)
     elif wx.Platform == "__WXMSW__":
-        log_path_string = "%APPDATA%\\konawall\\log.toml"
+        log_path_string = "%APPDATA%\\konawall"
         log_path = os.path.expandvars(log_path_string)
     else:
-        log_path = os.path.join(os.path.expanduser("~"), ".config", "konawall", "log.toml")
+        try:
+            from xdg_base_dirs import xdg_data_home
+            log_path = os.path.join(xdg_data_home(), "konawall") 
+        except:
+            log_path = os.path.join(os.path.expanduser("~"), ".config", "konawall")
+    if not os.path.exists(log_path):
+        os.makedirs(log_path)
+    log_path = os.path.join(log_path, "konawall.log")
     file_logger = logging.FileHandler(log_path, mode="a")
     console_logger = logging.StreamHandler()
     logging.basicConfig(
@@ -372,7 +413,7 @@ def main():
     )
     app = wx.App(redirect=False)
     app.SetExitOnFrameDelete(False)
-    Konawall(version, file_logger)
+    Konawall(version, file_logger, log_path)
     app.MainLoop()
 
 if __name__ == "__main__":

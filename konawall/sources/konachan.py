@@ -26,7 +26,7 @@ def request_posts(count: int, tags: list) -> list:
     # Check if the request was successful
     logging.debug("Status code: " + str(response.status_code))
     # List of URLs to download
-    post_urls: list = []
+    posts: list = []
     if response.status_code == 200:
         # Get the JSON data from the response
         json = response.json()
@@ -39,11 +39,11 @@ def request_posts(count: int, tags: list) -> list:
             kv_print("Tags", post["tags"])
             kv_print("URL", post["file_url"])
             # Append the URL to the list
-            post_urls.append(post["file_url"])
+            posts.append(post)
     else:
         # Raise an exception if the request failed
         RequestFailed(response.status_code)
-    return post_urls
+    return posts
 
 """
 Download a number of images from Konachan given a list of tags and a count
@@ -55,8 +55,11 @@ Download a number of images from Konachan given a list of tags and a count
 def handle(count: int, tags: list) -> list:
     logging.debug(f"handle_konachan() called with count={count}, tags=[{', '.join(tags)}]")
     # Get a list of URLs to download
-    post_urls: list = request_posts(count, tags)
+    posts: list = request_posts(count, tags)
+    urls: list = []
     # Download the images
-    files = download_files(post_urls)
+    for post in posts:
+        urls.append(post["file_url"])
+    files = download_files(urls)
     # Return the downloaded files
-    return files
+    return files, posts

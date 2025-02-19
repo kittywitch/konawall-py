@@ -54,7 +54,7 @@ def main():
     else:
         count = args.count
 
-    files = source_handlers[args.source](count, args.tags)
+    files, posts = source_handlers[args.source](count, args.tags)
 
     if not args.environment:
         set_environment_wallpapers(environment, files, displays)
