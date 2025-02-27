@@ -21,6 +21,7 @@ def detect_linux_environment():
         "kde", # qdbus
     ]
     modified_mapping = {
+        "none+i3": "feh",
         "plasma": "kde",
         "fluxbox": "feh",
         "blackbox": "feh",
