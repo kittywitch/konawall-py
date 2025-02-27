@@ -5,6 +5,7 @@
   psmisc,
   gobject-introspection,
   gtk3,
+feh,
   dbus-python,
   wrapGAppsHook,
 }: let
