@@ -32,7 +32,8 @@ in
       dependencies = map (name: python311Packages.${name} or dependencyReplacements.${name}) dependencyNames;
     in
       dependencies ++ [
-      psmisc
+        feh
+        psmisc
       gtk3
       dbus-python
       ];
