@@ -24,6 +24,7 @@ class Konawall(wx.adv.TaskBarIcon):
             self.hidden_frame.Hide()
 
         self.log_path = log_path
+        self.config = {}
         self.wallpaper_rotation_counter = 0 
         self.file_logger = file_logger
         self.version = version
@@ -136,6 +137,7 @@ class Konawall(wx.adv.TaskBarIcon):
             # If the config file exists, load it as a dictionary into the config variable.
             with open(self.config_path, "rb") as f:
                 config = tomllib.load(f)
+                self.config = config
             # for every key-value pair in the config variable , set the corresponding attribute of our class to it
             for k, v in config.items():
                 kv_print(f"Loaded {k}", v)
@@ -341,7 +343,7 @@ class Konawall(wx.adv.TaskBarIcon):
     def rotate_wallpapers(self, event):
         displays = screeninfo.get_monitors()
         count = len(displays)
-        files, self.current = source_handlers[self.source](count, self.tags)
+        files, self.current = source_handlers[self.source](count, self.tags, self.config)
         set_environment_wallpapers(self.environment, files, displays)
 
     # For macOS
