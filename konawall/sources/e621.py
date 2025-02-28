@@ -1,5 +1,6 @@
 import requests
 import logging
+import os
 from konawall.custom_print import kv_print
 from konawall.custom_errors import RequestFailed
 from konawall.module_loader import add_source
@@ -13,7 +14,10 @@ Turn a list of tags and a count into a list of URLs to download from
 :returns: A list of URLs to download from
 """
 def request_posts(count: int, tags: list, config) -> list:
-    api_key = config["e621_api_key"]
+    if "KONAWALL_E621_API_KEY" in os.environ:
+        api_key = os.environ["KONAWALL_E621_API_KEY"]
+    else:
+        api_key = config["e621_api_key"]
     logging.debug(f"request_posts() called with count={count}, tags=[{', '.join(tags)}]")
     # Make sure we get a different result every time by using "order:random" as a tag
     if "order:random" not in tags:
