@@ -38,6 +38,7 @@ def request_posts(count: int, tags: list, config={}) -> list:
             kv_print("Resolution", f"{post['width']}x{post['height']}")
             kv_print("Tags", post["tags"])
             kv_print("URL", post["file_url"])
+            post["show_url"] = f"https://konachan.com/post/show/{post["id"]}"
             # Append the URL to the list
             posts.append(post)
     else:

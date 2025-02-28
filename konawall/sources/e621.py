@@ -38,8 +38,9 @@ def request_posts(count: int, tags: list, config) -> list:
             kv_print("Rating", post["rating"])
             kv_print("Resolution", f"{post['file']['width']}x{post['file']['height']}")
             kv_print("Tags", post["tags"])
-            kv_print("URL", post["file"]["url"])
+            kv_print("URL", post["file"]["url"])i
             # Append the URL to the list
+            post["show_url"] = f"https://e621.net/posts/{post['id']}"
             posts.append(post)
     else:
         # Raise an exception if the request failed

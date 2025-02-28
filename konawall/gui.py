@@ -92,7 +92,7 @@ class Konawall(wx.adv.TaskBarIcon):
 
     def open_url(self, evt=None):
         for post in self.current:
-            subprocess.call(["xdg-open", f'https://konachan.com/post/show/{post["id"]}'])
+            subprocess.call(["xdg-open", post["show_url"])
 
     def open_log(self, evt=None):
         subprocess.call(["xdg-open", self.log_path])
