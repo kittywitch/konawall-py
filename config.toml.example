@@ -1,5 +1,6 @@
 interval = 300
 rotate = true
+api_key = ""
 source = "konachan"
 tags = [
     "rating:s"
