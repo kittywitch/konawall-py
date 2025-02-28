@@ -1,6 +1,6 @@
 interval = 300
 rotate = true
-api_key = ""
+e621_api_key = ""
 source = "konachan"
 tags = [
     "rating:s"
