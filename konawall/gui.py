@@ -198,6 +198,8 @@ class Konawall(wx.adv.TaskBarIcon):
 
         # Time remaining for automatic wallpaper rotation
         self.timed_wallpaper_rotation_status_menu_item = create_info_item(self.menu, "Automatic wallpaper rotation disabled")
+        
+        self.source_menu_item = create_info_item(self.menu, f"Wallpaper source: {self.source}")
 
         create_separator(self.menu)
 
@@ -287,6 +289,7 @@ class Konawall(wx.adv.TaskBarIcon):
 
         if self.loaded_before == True:
             # If we're reloading, we need to make sure the timer and menu item reflect our current state.
+            self.source_menu_item.SetItemLabel(f"Wallpaper source: {self.source}")
             self.respect_timed_wallpaper_rotation_toggle()
             self.respect_current_interval_status()
             self.create_message_dialog("Config reloaded.")
