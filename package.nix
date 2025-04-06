@@ -1,7 +1,7 @@
 {
   lib,
   buildPythonPackage,
-  python311Packages,
+  python,
   psmisc,
   gobject-introspection,
   gtk3,
@@ -12,7 +12,7 @@ feh,
   pyproject = builtins.fromTOML (builtins.readFile ./pyproject.toml);
   poetryBlock = pyproject.tool.poetry;
   dependencyReplacements = {
-    wxpython = python311Packages.wxPython_4_2;
+    wxpython = python.pkgs.wxPython_4_2;
   };
 in
   buildPythonPackage rec {
@@ -30,7 +30,7 @@ in
 
     propagatedBuildInputs = let
       dependencyNames = (lib.attrNames poetryBlock.dependencies) ++ ["setuptools" "pygobject3" "pystray" "dbus-python"];
-      dependencies = map (name: python311Packages.${name} or dependencyReplacements.${name}) dependencyNames;
+      dependencies = map (name: python.pkgs.${name} or dependencyReplacements.${name}) dependencyNames;
     in
       dependencies ++ [
         feh

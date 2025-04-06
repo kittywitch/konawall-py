@@ -167,3 +167,6 @@ cython_debug/
 # App specific files
 app.log
 config.toml
+
+# Nix
+/result
