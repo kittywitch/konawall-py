@@ -53,7 +53,7 @@ Download a number of images from Konachan given a list of tags and a count
 :param tags: A list of tags to search for
 """
 @add_source("konachan")
-def handle(count: int, tags: list) -> list:
+def handle(count: int, tags: list, config) -> list:
     logging.debug(f"handle_konachan() called with count={count}, tags=[{', '.join(tags)}]")
     # Get a list of URLs to download
     posts: list = request_posts(count, tags)
