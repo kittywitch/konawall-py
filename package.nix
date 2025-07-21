@@ -5,7 +5,8 @@
   psmisc,
   gobject-introspection,
   gtk3,
-feh,
+  setuptools,
+  feh,
   dbus-python,
   wrapGAppsHook,
 }: let
@@ -20,6 +21,9 @@ in
     version = poetryBlock.version;
 
     src = ./.;
+
+    pyproject = true;
+    build-system = [ setuptools ];
 
     doCheck = false;
 
