@@ -14,15 +14,20 @@ packages = [
 [tool.poetry.scripts]
 gui = "konawall.gui:main"
 
+[project]
+name = "konawall"
+version = "0.1.0"
+dynamic = [ "dependencies" ]
+
 [tool.poetry.dependencies]
-python = "^3.11"
-pillow = "^10.0.1"
-screeninfo = "^0.8.1"
-requests = "^2.31.0"
-termcolor = "^2.3.0"
-wxpython = "^4.2.2"
-humanfriendly = "^10.0"
-xdg-base-dirs = "^6.0.1"
+python = ">=3.11,<4.0.0"
+pillow = ">=10.0.1"
+screeninfo = ">=0.8.1"
+requests = ">=2.31.0"
+termcolor = ">=2.3.0"
+wxpython = ">=4.2.2"
+humanfriendly = ">=10.0"
+xdg-base-dirs = ">=6.0.1"
 
 [build-system]
 requires = [ "poetry-core" ]

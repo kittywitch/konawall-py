@@ -2,6 +2,7 @@
   lib,
   buildPythonPackage,
   python,
+  poetry-core,
   psmisc,
   gobject-introspection,
   gtk3,
@@ -22,8 +23,8 @@ in
 
     src = ./.;
 
-    pyproject = true;
-    build-system = [ setuptools ];
+    format = "pyproject";
+    build-system = [ poetry-core ];
 
     doCheck = false;
 
