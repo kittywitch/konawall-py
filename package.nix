@@ -9,7 +9,7 @@
   setuptools,
   feh,
   dbus-python,
-  wrapGAppsHook,
+  wrapGAppsHook3,
 }: let
   pyproject = builtins.fromTOML (builtins.readFile ./pyproject.toml);
   poetryBlock = pyproject.tool.poetry;
@@ -29,7 +29,7 @@ in
     doCheck = false;
 
     nativeBuildInputs = [
-      wrapGAppsHook
+      wrapGAppsHook3
       gobject-introspection
     ];
 
