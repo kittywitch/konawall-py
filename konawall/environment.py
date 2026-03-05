@@ -8,8 +8,6 @@ from konawall.module_loader import environment_handlers
 This detects the DE/WM from the Linux environment because it's not provided by the platform
 """
 def detect_linux_environment():
-    if os.environ.get("SWAYSOCK"):
-        return "sway"
     return_unmodified_if_these = [
         # TODO: implement
         "gnome", # dconf
@@ -40,6 +38,8 @@ def detect_linux_environment():
     elif desktop_session in modified_mapping:
         return modified_mapping[desktop_session]
     else:
+        if os.environ.get("SWAYSOCK"):
+            return "sway"
         return os.environ.get("XDG_CURRENT_DESKTOP").lower()
 
 def detect_environment():
