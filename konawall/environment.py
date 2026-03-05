@@ -17,6 +17,7 @@ def detect_linux_environment():
         "xfce", # xfconf
         "lxde", # pcmanfm
         "kde", # qdbus
+        "mango",
     ]
     modified_mapping = {
         "none+i3": "feh",
